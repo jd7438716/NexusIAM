@@ -6,7 +6,6 @@ import {
   FileImage, 
   FileJson, 
   File, 
-  MoreVertical, 
   Download, 
   Trash2, 
   Eye,
@@ -14,11 +13,13 @@ import {
 } from 'lucide-react';
 import { MOCK_FILES, simulateDelay } from '../../services/mockData';
 import { FileItem } from '../../types';
+import { Modal } from '../../components/Modal';
 
 export const Files = () => {
   const [files, setFiles] = useState<FileItem[]>(MOCK_FILES);
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [previewFile, setPreviewFile] = useState<FileItem | null>(null);
 
   const getFileIcon = (type: string) => {
     switch (type.toLowerCase()) {
@@ -133,7 +134,11 @@ export const Files = () => {
                                     <td className="px-6 py-4 text-slate-500">{file.uploadedAt}</td>
                                     <td className="px-6 py-4 text-right">
                                         <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <button className="p-1.5 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded" title="Preview">
+                                            <button 
+                                                onClick={() => setPreviewFile(file)}
+                                                className="p-1.5 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded" 
+                                                title="Preview"
+                                            >
                                                 <Eye size={18} />
                                             </button>
                                             <button className="p-1.5 text-slate-500 hover:text-green-600 hover:bg-green-50 rounded" title="Download">
@@ -164,6 +169,39 @@ export const Files = () => {
             </div>
         </div>
       </div>
+
+      {/* File Preview Modal */}
+      <Modal isOpen={!!previewFile} onClose={() => setPreviewFile(null)} title={previewFile?.name || 'Preview'} size="lg">
+         <div className="flex flex-col items-center justify-center space-y-4 p-4 min-h-[300px]">
+            {previewFile && (
+                <>
+                    {['jpg', 'png'].includes(previewFile.type.toLowerCase()) ? (
+                         <img src="https://picsum.photos/600/400" alt="Preview" className="rounded-lg shadow-sm w-full object-cover" />
+                    ) : (
+                        <div className="w-full h-64 bg-slate-100 rounded-lg flex flex-col items-center justify-center text-slate-500">
+                             <FileText size={64} className="mb-4 text-slate-300" />
+                             <p>Preview not available for {previewFile.type}</p>
+                        </div>
+                    )}
+                    <div className="w-full flex justify-between items-center text-sm text-slate-500 pt-4 border-t border-slate-100 mt-4">
+                        <span>Size: {previewFile.size}</span>
+                        <span>Uploaded: {previewFile.uploadedAt}</span>
+                    </div>
+                </>
+            )}
+         </div>
+         <div className="flex justify-end pt-4 gap-2">
+            <button 
+                onClick={() => setPreviewFile(null)}
+                className="px-4 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 font-medium"
+            >
+                Close
+            </button>
+            <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium">
+                Download File
+            </button>
+         </div>
+      </Modal>
     </div>
   );
 };

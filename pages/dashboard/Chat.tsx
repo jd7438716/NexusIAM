@@ -1,11 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, MoreVertical, Phone, Video, Search, Circle } from 'lucide-react';
+import { Send, MoreVertical, Phone, Video, Search, Circle, Mic, MicOff, Video as VideoIcon, VideoOff, PhoneOff } from 'lucide-react';
 import { MOCK_CONTACTS, MOCK_MESSAGES } from '../../services/mockData';
 
 export const Chat: React.FC = () => {
   const [selectedContact, setSelectedContact] = useState(MOCK_CONTACTS[0]);
   const [messages, setMessages] = useState(MOCK_MESSAGES);
   const [inputValue, setInputValue] = useState('');
+  const [isCalling, setIsCalling] = useState(false);
+  const [callType, setCallType] = useState<'audio' | 'video'>('audio');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -30,8 +32,51 @@ export const Chat: React.FC = () => {
     setInputValue('');
   };
 
+  const startCall = (type: 'audio' | 'video') => {
+    setCallType(type);
+    setIsCalling(true);
+  };
+
   return (
-    <div className="h-[calc(100vh-8rem)] bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex">
+    <div className="h-[calc(100vh-8rem)] bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex relative">
+      
+      {/* Call Overlay */}
+      {isCalling && (
+        <div className="absolute inset-0 z-50 bg-slate-900 flex flex-col items-center justify-center text-white animate-in fade-in duration-300">
+            <div className="flex flex-col items-center space-y-6">
+                <div className="relative">
+                    <img 
+                        src={selectedContact.avatar} 
+                        alt={selectedContact.name} 
+                        className="w-32 h-32 rounded-full border-4 border-white/20 shadow-2xl" 
+                    />
+                    <div className="absolute inset-0 rounded-full animate-ping bg-white/20"></div>
+                </div>
+                <div className="text-center">
+                    <h2 className="text-3xl font-bold">{selectedContact.name}</h2>
+                    <p className="text-slate-400 mt-2 animate-pulse">{callType === 'video' ? 'Video Calling...' : 'Calling...'}</p>
+                </div>
+            </div>
+
+            <div className="absolute bottom-12 flex items-center gap-6">
+                 <button className="p-4 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm transition-colors">
+                     <Mic size={24} />
+                 </button>
+                 {callType === 'video' && (
+                    <button className="p-4 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm transition-colors">
+                        <VideoIcon size={24} />
+                    </button>
+                 )}
+                 <button 
+                    onClick={() => setIsCalling(false)}
+                    className="p-4 rounded-full bg-red-600 hover:bg-red-700 shadow-lg shadow-red-600/30 transition-colors transform hover:scale-110"
+                 >
+                     <PhoneOff size={28} />
+                 </button>
+            </div>
+        </div>
+      )}
+
       {/* Sidebar - Contacts */}
       <div className="w-80 border-r border-slate-200 flex flex-col hidden md:flex">
         <div className="p-4 border-b border-slate-100">
@@ -83,8 +128,20 @@ export const Chat: React.FC = () => {
                 </div>
             </div>
             <div className="flex items-center gap-2 text-slate-400">
-                <button className="p-2 hover:bg-slate-100 rounded-lg transition-colors"><Phone size={20} /></button>
-                <button className="p-2 hover:bg-slate-100 rounded-lg transition-colors"><Video size={20} /></button>
+                <button 
+                    onClick={() => startCall('audio')}
+                    className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+                    title="Audio Call"
+                >
+                    <Phone size={20} />
+                </button>
+                <button 
+                    onClick={() => startCall('video')}
+                    className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+                    title="Video Call"
+                >
+                    <Video size={20} />
+                </button>
                 <button className="p-2 hover:bg-slate-100 rounded-lg transition-colors"><MoreVertical size={20} /></button>
             </div>
         </div>

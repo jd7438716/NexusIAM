@@ -1,8 +1,20 @@
-import React from 'react';
-import { Camera, Mail, Phone, MapPin, User as UserIcon, AlertTriangle, Download, Trash2, Save } from 'lucide-react';
+import React, { useState } from 'react';
+import { Camera, Mail, Phone, MapPin, User as UserIcon, AlertTriangle, Download, Trash2, Save, Check } from 'lucide-react';
 import { User } from '../../types';
+import { simulateDelay } from '../../services/mockData';
 
 export const Profile: React.FC<{ user: User | null }> = ({ user }) => {
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  const handleSave = async () => {
+    setSaving(true);
+    await simulateDelay(1000);
+    setSaving(false);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 3000);
+  };
+
   return (
     <div className="space-y-8 max-w-4xl mx-auto">
       <div>
@@ -36,8 +48,16 @@ export const Profile: React.FC<{ user: User | null }> = ({ user }) => {
                     </p>
                 </div>
                 <div className="pb-2">
-                    <button className="flex items-center gap-2 px-4 py-2 bg-slate-900 text-white rounded-lg hover:bg-slate-800 transition-colors shadow-sm text-sm font-medium">
-                        <Save size={16} /> Save Changes
+                    <button 
+                        onClick={handleSave}
+                        disabled={saving || saved}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all shadow-sm text-sm font-medium ${
+                            saved 
+                                ? 'bg-green-600 text-white' 
+                                : 'bg-slate-900 text-white hover:bg-slate-800'
+                        }`}
+                    >
+                        {saved ? <><Check size={16} /> Saved</> : <><Save size={16} /> {saving ? 'Saving...' : 'Save Changes'}</>}
                     </button>
                 </div>
             </div>

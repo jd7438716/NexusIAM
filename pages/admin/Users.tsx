@@ -1,16 +1,50 @@
 import React, { useState } from 'react';
-import { Search, UserPlus, MoreVertical, Shield, Ban, RotateCcw, Edit, CheckCircle } from 'lucide-react';
-import { MOCK_USERS_LIST } from '../../services/mockData';
+import { Search, UserPlus, MoreVertical, Shield, Ban, RotateCcw, Edit, CheckCircle, Mail, User as UserIcon, AlertTriangle } from 'lucide-react';
+import { MOCK_USERS_LIST, simulateDelay } from '../../services/mockData';
 import { User, UserRole } from '../../types';
+import { Modal } from '../../components/Modal';
 
 export const Users = () => {
   const [users, setUsers] = useState<User[]>(MOCK_USERS_LIST);
   const [searchTerm, setSearchTerm] = useState('');
+  
+  // Modal States
+  const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [confirmAction, setConfirmAction] = useState<{type: 'SUSPEND' | 'RESET_MFA' | 'DELETE', user: User} | null>(null);
+  const [processing, setProcessing] = useState(false);
 
   const filteredUsers = users.filter(user => 
     user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleUpdateUser = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingUser) return;
+    setProcessing(true);
+    await simulateDelay(1000);
+    setUsers(users.map(u => u.id === editingUser.id ? editingUser : u));
+    setProcessing(false);
+    setEditingUser(null);
+  };
+
+  const executeConfirmAction = async () => {
+    if (!confirmAction) return;
+    setProcessing(true);
+    await simulateDelay(1000);
+
+    if (confirmAction.type === 'SUSPEND') {
+        // Toggle mock active status logic (using a property not in type for simple mock, or removing)
+        // For visual, let's just alert or remove
+        // In real app, update status property
+        alert(`User ${confirmAction.user.username} has been suspended.`);
+    } else if (confirmAction.type === 'RESET_MFA') {
+        setUsers(users.map(u => u.id === confirmAction.user.id ? {...u, mfaEnabled: false} : u));
+    }
+
+    setProcessing(false);
+    setConfirmAction(null);
+  };
 
   return (
     <div className="space-y-6">
@@ -88,13 +122,25 @@ export const Users = () => {
                             </td>
                             <td className="px-6 py-4 text-right">
                                 <div className="flex items-center justify-end gap-2">
-                                    <button className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded" title="Edit User">
+                                    <button 
+                                        onClick={() => setEditingUser(user)}
+                                        className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded" 
+                                        title="Edit User"
+                                    >
                                         <Edit size={16} />
                                     </button>
-                                    <button className="p-1.5 text-slate-400 hover:text-orange-600 hover:bg-orange-50 rounded" title="Reset MFA">
+                                    <button 
+                                        onClick={() => setConfirmAction({type: 'RESET_MFA', user})}
+                                        className="p-1.5 text-slate-400 hover:text-orange-600 hover:bg-orange-50 rounded" 
+                                        title="Reset MFA"
+                                    >
                                         <RotateCcw size={16} />
                                     </button>
-                                    <button className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded" title="Suspend User">
+                                    <button 
+                                        onClick={() => setConfirmAction({type: 'SUSPEND', user})}
+                                        className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded" 
+                                        title="Suspend User"
+                                    >
                                         <Ban size={16} />
                                     </button>
                                 </div>
@@ -105,6 +151,99 @@ export const Users = () => {
             </table>
         </div>
       </div>
+
+      {/* Edit User Modal */}
+      <Modal isOpen={!!editingUser} onClose={() => setEditingUser(null)} title="Edit User">
+        {editingUser && (
+            <form onSubmit={handleUpdateUser} className="space-y-4">
+                <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Username</label>
+                    <div className="relative">
+                        <UserIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                        <input 
+                            type="text" 
+                            value={editingUser.username}
+                            onChange={e => setEditingUser({...editingUser, username: e.target.value})}
+                            className="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                        />
+                    </div>
+                </div>
+                <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Email</label>
+                    <div className="relative">
+                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                        <input 
+                            type="email" 
+                            value={editingUser.email}
+                            onChange={e => setEditingUser({...editingUser, email: e.target.value})}
+                            className="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                        />
+                    </div>
+                </div>
+                <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Role</label>
+                    <select 
+                        value={editingUser.role}
+                        onChange={e => setEditingUser({...editingUser, role: e.target.value as UserRole})}
+                        className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                    >
+                        <option value={UserRole.USER}>User</option>
+                        <option value={UserRole.ADMIN}>Admin</option>
+                    </select>
+                </div>
+                <div className="pt-4 flex justify-end gap-2">
+                    <button 
+                        type="button" 
+                        onClick={() => setEditingUser(null)}
+                        className="px-4 py-2 border border-slate-300 rounded-lg text-slate-700 font-medium hover:bg-slate-50"
+                    >
+                        Cancel
+                    </button>
+                    <button 
+                        type="submit" 
+                        disabled={processing}
+                        className="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 disabled:opacity-70"
+                    >
+                        {processing ? 'Saving...' : 'Save Changes'}
+                    </button>
+                </div>
+            </form>
+        )}
+      </Modal>
+
+      {/* Confirmation Modal */}
+      <Modal 
+        isOpen={!!confirmAction} 
+        onClose={() => setConfirmAction(null)} 
+        title={confirmAction?.type === 'SUSPEND' ? 'Suspend User' : 'Reset MFA'}
+        size="sm"
+      >
+        <div className="text-center space-y-4">
+            <div className={`mx-auto w-12 h-12 rounded-full flex items-center justify-center ${confirmAction?.type === 'SUSPEND' ? 'bg-red-100 text-red-600' : 'bg-orange-100 text-orange-600'}`}>
+                <AlertTriangle size={24} />
+            </div>
+            <p className="text-slate-600">
+                Are you sure you want to {confirmAction?.type === 'SUSPEND' ? 'suspend' : 'reset MFA for'} <strong>{confirmAction?.user.username}</strong>?
+                {confirmAction?.type === 'SUSPEND' && <span className="block text-xs mt-2 text-slate-500">The user will lose access immediately.</span>}
+                {confirmAction?.type === 'RESET_MFA' && <span className="block text-xs mt-2 text-slate-500">The user will be required to set up MFA again on next login.</span>}
+            </p>
+            <div className="flex gap-3 justify-center pt-2">
+                 <button 
+                    onClick={() => setConfirmAction(null)}
+                    className="px-4 py-2 border border-slate-300 rounded-lg text-slate-700 font-medium hover:bg-slate-50"
+                >
+                    Cancel
+                </button>
+                <button 
+                    onClick={executeConfirmAction}
+                    disabled={processing}
+                    className={`px-4 py-2 text-white rounded-lg font-medium disabled:opacity-70 ${confirmAction?.type === 'SUSPEND' ? 'bg-red-600 hover:bg-red-700' : 'bg-orange-600 hover:bg-orange-700'}`}
+                >
+                    {processing ? 'Processing...' : 'Confirm'}
+                </button>
+            </div>
+        </div>
+      </Modal>
     </div>
   );
 };

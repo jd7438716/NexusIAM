@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { Shield, Key, Smartphone, Monitor, Globe, LogOut, CheckCircle2, AlertTriangle } from 'lucide-react';
+import { Shield, Key, Smartphone, Monitor, Globe, LogOut, CheckCircle2, AlertTriangle, Copy } from 'lucide-react';
 import { User, Session } from '../../types';
 import { MOCK_SESSIONS, simulateDelay } from '../../services/mockData';
+import { Modal } from '../../components/Modal';
 
 export const Security: React.FC<{ user: User | null }> = ({ user }) => {
   const [sessions, setSessions] = useState<Session[]>(MOCK_SESSIONS);
   const [mfaEnabled, setMfaEnabled] = useState(user?.mfaEnabled || false);
   const [loadingMfa, setLoadingMfa] = useState(false);
+  const [showRecoveryCodes, setShowRecoveryCodes] = useState(false);
 
   const toggleMfa = async () => {
     setLoadingMfa(true);
@@ -18,6 +20,12 @@ export const Security: React.FC<{ user: User | null }> = ({ user }) => {
   const terminateSession = (id: string) => {
     setSessions(prev => prev.filter(s => s.id !== id));
   };
+
+  // Mock Recovery Codes
+  const recoveryCodes = [
+    'XJ92-KLD1', 'MN23-PPO9', 'QW12-SSA1', 'LK99-JJ22',
+    'PO00-11KK', 'ZA22-MMN1', 'BB11-99LL', 'CC33-OO22'
+  ];
 
   return (
     <div className="space-y-8 max-w-4xl mx-auto">
@@ -67,7 +75,12 @@ export const Security: React.FC<{ user: User | null }> = ({ user }) => {
         {mfaEnabled && (
            <div className="px-6 py-4 bg-slate-50 flex items-center justify-between">
                <span className="text-sm text-slate-600">Recovery codes are available.</span>
-               <button className="text-sm text-blue-600 font-medium hover:underline">View Codes</button>
+               <button 
+                  onClick={() => setShowRecoveryCodes(true)}
+                  className="text-sm text-blue-600 font-medium hover:underline"
+               >
+                 View Codes
+               </button>
            </div>
         )}
       </div>
@@ -151,6 +164,31 @@ export const Security: React.FC<{ user: User | null }> = ({ user }) => {
             ))}
         </div>
       </div>
+
+      {/* Recovery Codes Modal */}
+      <Modal isOpen={showRecoveryCodes} onClose={() => setShowRecoveryCodes(false)} title="Recovery Codes">
+        <div className="space-y-4">
+           <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200 flex gap-3 text-yellow-800 text-sm">
+               <AlertTriangle className="shrink-0" size={20} />
+               <p>Store these codes safely. Each code can only be used once to access your account if you lose your device.</p>
+           </div>
+           <div className="grid grid-cols-2 gap-3">
+               {recoveryCodes.map((code, idx) => (
+                   <div key={idx} className="bg-slate-100 p-3 rounded text-center font-mono text-slate-800 font-bold border border-slate-200 tracking-wider">
+                       {code}
+                   </div>
+               ))}
+           </div>
+           <div className="pt-4 flex justify-end gap-2">
+               <button className="flex items-center gap-2 px-4 py-2 border border-slate-300 rounded-lg hover:bg-slate-50 text-slate-700 font-medium">
+                   <Copy size={16} /> Copy All
+               </button>
+               <button className="px-4 py-2 bg-slate-900 text-white rounded-lg hover:bg-slate-800 font-medium" onClick={() => setShowRecoveryCodes(false)}>
+                   Done
+               </button>
+           </div>
+        </div>
+      </Modal>
     </div>
   );
 };
