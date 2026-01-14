@@ -1,0 +1,5 @@
+{
+  "name": "Nexus IAM System",
+  "description": "A comprehensive Enterprise Identity & Access Management system featuring authentication, user self-service, asset management, and administrative auditing.",
+  "requestFramePermissions": []
+}
