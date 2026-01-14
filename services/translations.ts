@@ -17,6 +17,9 @@ export const translations = {
     'common.search': 'Search...',
     'common.processing': 'Processing...',
     'common.close': 'Close',
+    'common.confirm': 'Confirm',
+    'common.online': 'Online',
+    'common.offline': 'Offline',
 
     // Nav
     'nav.general': 'General',
@@ -37,6 +40,9 @@ export const translations = {
 
     // Header
     'header.search': 'Search resources (Cmd+K)...',
+    'header.menu.profile': 'My Profile',
+    'header.menu.settings': 'Settings',
+    'header.menu.logout': 'Sign Out',
     
     // Auth
     'auth.welcome': 'Welcome Back',
@@ -140,6 +146,77 @@ export const translations = {
     'settings.notif.email': 'Email Digest',
     'settings.notif.push': 'Push Notifications',
     'settings.notif.marketing': 'Marketing Updates',
+
+    // Chat
+    'chat.search': 'Search contacts...',
+    'chat.type_message': 'Type a message...',
+    'chat.calling': 'Calling...',
+    'chat.video_calling': 'Video Calling...',
+
+    // Invitations
+    'invites.title': 'Invitations',
+    'invites.subtitle': 'Manage your invite codes and earn rewards.',
+    'invites.generate': 'Generate Code',
+    'invites.generating': 'Generating...',
+    'invites.successful': 'Successful Invites',
+    'invites.active': 'Active Codes',
+    'invites.pending': 'Reward Pending',
+    'invites.history': 'Invitation History',
+    'invites.code': 'Code',
+    'invites.used_by': 'Used By',
+    'invites.created': 'Created Date',
+
+    // Notifications
+    'notif.title': 'Notifications',
+    'notif.subtitle': 'Stay updated with system alerts and account activity.',
+    'notif.mark_all': 'Mark all read',
+    'notif.filter.all': 'All',
+    'notif.filter.unread': 'Unread',
+    'notif.empty': 'No notifications found',
+
+    // Admin Users
+    'users.title': 'User Management',
+    'users.subtitle': 'Manage user access, roles, and status.',
+    'users.add': 'Add User',
+    'users.search': 'Search users by name or email...',
+    'users.user': 'User',
+    'users.role': 'Role',
+    'users.mfa_status': 'MFA Status',
+    'users.suspend': 'Suspend User',
+    'users.reset_mfa': 'Reset MFA',
+    'users.suspend_confirm': 'Are you sure you want to suspend',
+    'users.suspend_desc': 'The user will lose access immediately.',
+    'users.reset_mfa_confirm': 'Are you sure you want to reset MFA for',
+    'users.reset_mfa_desc': 'The user will be required to set up MFA again on next login.',
+
+    // Admin Broadcast
+    'broadcast.title': 'System Broadcast',
+    'broadcast.subtitle': 'Publish global announcements to all tenants and users.',
+    'broadcast.compose': 'Compose Announcement',
+    'broadcast.form.title': 'Title',
+    'broadcast.form.priority': 'Priority Level',
+    'broadcast.form.message': 'Message Content',
+    'broadcast.form.message_placeholder': 'Type your announcement here...',
+    'broadcast.publish': 'Publish Broadcast',
+    'broadcast.publishing': 'Publishing...',
+    'broadcast.recent': 'Recent Broadcasts',
+    'broadcast.level.info': 'Info',
+    'broadcast.level.warning': 'Warning',
+    'broadcast.level.critical': 'Critical',
+
+    // Admin Audit
+    'audit.title': 'Audit Logs',
+    'audit.subtitle': 'Track all system activities and changes.',
+    'audit.search': 'Search by IP, Actor or Action...',
+    'audit.timestamp': 'Timestamp',
+    'audit.actor': 'Actor',
+    'audit.action': 'Action',
+    'audit.ip': 'IP Address',
+    'audit.details': 'Details',
+    'audit.view_diff': 'View Diff',
+    'audit.change_details': 'Change Details',
+    'audit.before': 'Before',
+    'audit.after': 'After',
   },
   zh: {
     // Common
@@ -157,6 +234,9 @@ export const translations = {
     'common.search': '搜索...',
     'common.processing': '处理中...',
     'common.close': '关闭',
+    'common.confirm': '确认',
+    'common.online': '在线',
+    'common.offline': '离线',
 
     // Nav
     'nav.general': '通用',
@@ -177,6 +257,9 @@ export const translations = {
 
     // Header
     'header.search': '搜索资源 (Cmd+K)...',
+    'header.menu.profile': '个人资料',
+    'header.menu.settings': '系统设置',
+    'header.menu.logout': '退出登录',
 
     // Auth
     'auth.welcome': '欢迎回来',
@@ -280,5 +363,76 @@ export const translations = {
     'settings.notif.email': '邮件摘要',
     'settings.notif.push': '推送通知',
     'settings.notif.marketing': '营销动态',
+
+    // Chat
+    'chat.search': '搜索联系人...',
+    'chat.type_message': '输入消息...',
+    'chat.calling': '呼叫中...',
+    'chat.video_calling': '视频呼叫中...',
+
+    // Invitations
+    'invites.title': '邀请系统',
+    'invites.subtitle': '管理您的邀请码并获得奖励。',
+    'invites.generate': '生成邀请码',
+    'invites.generating': '生成中...',
+    'invites.successful': '成功邀请',
+    'invites.active': '有效邀请码',
+    'invites.pending': '待结算奖励',
+    'invites.history': '邀请历史',
+    'invites.code': '邀请码',
+    'invites.used_by': '使用者',
+    'invites.created': '创建日期',
+
+    // Notifications
+    'notif.title': '通知中心',
+    'notif.subtitle': '查看系统提醒和账户动态。',
+    'notif.mark_all': '全部已读',
+    'notif.filter.all': '全部',
+    'notif.filter.unread': '未读',
+    'notif.empty': '暂无通知',
+
+    // Admin Users
+    'users.title': '用户管理',
+    'users.subtitle': '管理用户访问权限、角色和状态。',
+    'users.add': '添加用户',
+    'users.search': '按姓名或邮箱搜索...',
+    'users.user': '用户',
+    'users.role': '角色',
+    'users.mfa_status': 'MFA 状态',
+    'users.suspend': '冻结用户',
+    'users.reset_mfa': '重置 MFA',
+    'users.suspend_confirm': '您确定要冻结',
+    'users.suspend_desc': '用户将立即失去访问权限。',
+    'users.reset_mfa_confirm': '您确定要重置 MFA 对于',
+    'users.reset_mfa_desc': '用户下次登录时将被要求重新设置 MFA。',
+
+    // Admin Broadcast
+    'broadcast.title': '系统广播',
+    'broadcast.subtitle': '向所有租户和用户发布全局公告。',
+    'broadcast.compose': '撰写公告',
+    'broadcast.form.title': '标题',
+    'broadcast.form.priority': '优先级',
+    'broadcast.form.message': '公告内容',
+    'broadcast.form.message_placeholder': '在此输入公告内容...',
+    'broadcast.publish': '发布广播',
+    'broadcast.publishing': '发布中...',
+    'broadcast.recent': '最近广播',
+    'broadcast.level.info': '信息',
+    'broadcast.level.warning': '警告',
+    'broadcast.level.critical': '紧急',
+
+    // Admin Audit
+    'audit.title': '审计日志',
+    'audit.subtitle': '追踪所有系统活动和变更。',
+    'audit.search': '按 IP、操作员或动作搜索...',
+    'audit.timestamp': '时间戳',
+    'audit.actor': '操作员',
+    'audit.action': '动作',
+    'audit.ip': 'IP 地址',
+    'audit.details': '详情',
+    'audit.view_diff': '查看差异',
+    'audit.change_details': '变更详情',
+    'audit.before': '变更前',
+    'audit.after': '变更后',
   }
 };
