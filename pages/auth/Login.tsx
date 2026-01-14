@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { ShieldCheck, Mail, Lock, QrCode, Smartphone, ArrowRight } from 'lucide-react';
 import { simulateDelay } from '../../services/mockData';
+import { usePreferences } from '../../contexts/PreferencesContext';
 
 interface LoginProps {
   onLoginSuccess: () => void;
@@ -11,6 +12,7 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
   const [method, setMethod] = useState<'password' | 'phone' | 'qr'>('password');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { t } = usePreferences();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,7 +21,6 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
     setLoading(false);
     
     // Simulate check: if user has MFA, go to verify page.
-    // In a real app, backend returns this status.
     const hasMfa = true; 
     
     if (hasMfa) {
@@ -43,8 +44,8 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
           <div className="inline-flex items-center justify-center w-12 h-12 bg-blue-100 text-blue-600 rounded-xl mb-4">
             <ShieldCheck size={28} />
           </div>
-          <h1 className="text-2xl font-bold text-slate-900">Welcome Back</h1>
-          <p className="text-slate-500 mt-2 text-sm">Sign in to access your Nexus dashboard</p>
+          <h1 className="text-2xl font-bold text-slate-900">{t('auth.welcome')}</h1>
+          <p className="text-slate-500 mt-2 text-sm">{t('auth.subtitle')}</p>
         </div>
 
         {/* Method Tabs */}
@@ -53,19 +54,19 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
             onClick={() => setMethod('password')}
             className={`flex-1 py-4 text-sm font-medium transition-colors ${method === 'password' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-slate-500 hover:text-slate-800'}`}
           >
-            Password
+            {t('auth.password')}
           </button>
           <button 
             onClick={() => setMethod('phone')}
             className={`flex-1 py-4 text-sm font-medium transition-colors ${method === 'phone' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-slate-500 hover:text-slate-800'}`}
           >
-            Phone
+            {t('auth.phone')}
           </button>
           <button 
             onClick={() => setMethod('qr')}
             className={`flex-1 py-4 text-sm font-medium transition-colors ${method === 'qr' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-slate-500 hover:text-slate-800'}`}
           >
-            QR Code
+            {t('auth.qr')}
           </button>
         </div>
 
@@ -73,7 +74,7 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
           {method === 'password' && (
             <form onSubmit={handleLogin} className="space-y-5">
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-slate-500 uppercase">Email or Username</label>
+                <label className="text-xs font-semibold text-slate-500 uppercase">{t('auth.email_user')}</label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                   <input 
@@ -86,8 +87,8 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
               </div>
               <div className="space-y-1">
                 <div className="flex justify-between">
-                  <label className="text-xs font-semibold text-slate-500 uppercase">Password</label>
-                  <Link to="/forgot-password" className="text-xs text-blue-600 hover:underline">Forgot password?</Link>
+                  <label className="text-xs font-semibold text-slate-500 uppercase">{t('auth.password')}</label>
+                  <Link to="/forgot-password" className="text-xs text-blue-600 hover:underline">{t('auth.forgot')}</Link>
                 </div>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
@@ -102,7 +103,7 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
               
               <div className="flex items-center gap-2">
                 <input type="checkbox" id="remember" className="rounded border-slate-300 text-blue-600 focus:ring-blue-500" />
-                <label htmlFor="remember" className="text-sm text-slate-600">Remember me for 30 days</label>
+                <label htmlFor="remember" className="text-sm text-slate-600">{t('auth.remember')}</label>
               </div>
 
               <button 
@@ -110,9 +111,9 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
                 disabled={loading}
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-lg flex items-center justify-center gap-2 transition-colors shadow-lg shadow-blue-600/20 disabled:opacity-70 disabled:cursor-not-allowed"
               >
-                {loading ? 'Authenticating...' : (
+                {loading ? t('auth.authenticating') : (
                     <>
-                        Next Step <ArrowRight size={18} />
+                        {t('auth.next')} <ArrowRight size={18} />
                     </>
                 )}
               </button>
@@ -139,12 +140,12 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
                   <p className="text-sm font-semibold text-slate-900">Refresh Code</p>
                 </div>
               </div>
-              <p className="mt-4 text-sm text-slate-500">Scan with Nexus Authenticator App</p>
+              <p className="mt-4 text-sm text-slate-500">{t('auth.scan')}</p>
             </div>
           )}
 
           <div className="mt-8 text-center text-sm text-slate-500">
-            Don't have an account? <Link to="/register" className="text-blue-600 font-medium hover:underline">Create account</Link>
+            {t('auth.no_account')} <Link to="/register" className="text-blue-600 font-medium hover:underline">{t('auth.create')}</Link>
           </div>
         </div>
       </div>

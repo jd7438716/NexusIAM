@@ -13,11 +13,13 @@ import { Profile } from './pages/dashboard/Profile';
 import { Notifications } from './pages/dashboard/Notifications';
 import { Invitations } from './pages/dashboard/Invitations';
 import { Chat } from './pages/dashboard/Chat';
+import { Settings } from './pages/dashboard/Settings';
 import { AuditLogs } from './pages/admin/AuditLogs';
 import { Users } from './pages/admin/Users';
 import { Broadcast } from './pages/admin/Broadcast';
 import { User } from './types';
 import { MOCK_USER, MOCK_TRANSACTIONS, MOCK_NOTIFICATIONS } from './services/mockData';
+import { PreferencesProvider } from './contexts/PreferencesContext';
 
 const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -32,108 +34,118 @@ const App: React.FC = () => {
   };
 
   return (
-    <HashRouter>
-      <Routes>
-        {/* Auth Routes */}
-        <Route path="/login" element={!user ? <Login onLoginSuccess={handleLogin} /> : <Navigate to="/" />} />
-        <Route path="/register" element={!user ? <Register /> : <Navigate to="/" />} />
-        <Route path="/forgot-password" element={!user ? <ForgotPassword /> : <Navigate to="/" />} />
-        <Route path="/mfa-verify" element={!user ? <MfaVerify onLoginSuccess={handleLogin} /> : <Navigate to="/" />} />
-        
-        {/* Protected Routes */}
-        <Route path="/" element={
-          user ? (
-            <Layout user={user} onLogout={handleLogout}>
-              <Overview user={user} transactions={MOCK_TRANSACTIONS} notifications={MOCK_NOTIFICATIONS} />
-            </Layout>
-          ) : (
-            <Navigate to="/login" />
-          )
-        } />
+    <PreferencesProvider>
+      <HashRouter>
+        <Routes>
+          {/* Auth Routes */}
+          <Route path="/login" element={!user ? <Login onLoginSuccess={handleLogin} /> : <Navigate to="/" />} />
+          <Route path="/register" element={!user ? <Register /> : <Navigate to="/" />} />
+          <Route path="/forgot-password" element={!user ? <ForgotPassword /> : <Navigate to="/" />} />
+          <Route path="/mfa-verify" element={!user ? <MfaVerify onLoginSuccess={handleLogin} /> : <Navigate to="/" />} />
+          
+          {/* Protected Routes */}
+          <Route path="/" element={
+            user ? (
+              <Layout user={user} onLogout={handleLogout}>
+                <Overview user={user} transactions={MOCK_TRANSACTIONS} notifications={MOCK_NOTIFICATIONS} />
+              </Layout>
+            ) : (
+              <Navigate to="/login" />
+            )
+          } />
 
-        <Route path="/security" element={
-          user ? (
-            <Layout user={user} onLogout={handleLogout}>
-              <Security user={user} />
-            </Layout>
-          ) : <Navigate to="/login" />
-        } />
+          <Route path="/security" element={
+            user ? (
+              <Layout user={user} onLogout={handleLogout}>
+                <Security user={user} />
+              </Layout>
+            ) : <Navigate to="/login" />
+          } />
 
-        <Route path="/wallet" element={
-          user ? (
-            <Layout user={user} onLogout={handleLogout}>
-              <Wallet />
-            </Layout>
-          ) : <Navigate to="/login" />
-        } />
+          <Route path="/wallet" element={
+            user ? (
+              <Layout user={user} onLogout={handleLogout}>
+                <Wallet />
+              </Layout>
+            ) : <Navigate to="/login" />
+          } />
 
-         <Route path="/files" element={
-          user ? (
-            <Layout user={user} onLogout={handleLogout}>
-              <Files />
-            </Layout>
-          ) : <Navigate to="/login" />
-        } />
-        
-        <Route path="/profile" element={
-          user ? (
-            <Layout user={user} onLogout={handleLogout}>
-              <Profile user={user} />
-            </Layout>
-          ) : <Navigate to="/login" />
-        } />
-        
-        <Route path="/notifications" element={
-          user ? (
-            <Layout user={user} onLogout={handleLogout}>
-              <Notifications />
-            </Layout>
-          ) : <Navigate to="/login" />
-        } />
+          <Route path="/files" element={
+            user ? (
+              <Layout user={user} onLogout={handleLogout}>
+                <Files />
+              </Layout>
+            ) : <Navigate to="/login" />
+          } />
+          
+          <Route path="/profile" element={
+            user ? (
+              <Layout user={user} onLogout={handleLogout}>
+                <Profile user={user} />
+              </Layout>
+            ) : <Navigate to="/login" />
+          } />
+          
+          <Route path="/notifications" element={
+            user ? (
+              <Layout user={user} onLogout={handleLogout}>
+                <Notifications />
+              </Layout>
+            ) : <Navigate to="/login" />
+          } />
 
-        <Route path="/invitations" element={
-          user ? (
-            <Layout user={user} onLogout={handleLogout}>
-              <Invitations />
-            </Layout>
-          ) : <Navigate to="/login" />
-        } />
+          <Route path="/invitations" element={
+            user ? (
+              <Layout user={user} onLogout={handleLogout}>
+                <Invitations />
+              </Layout>
+            ) : <Navigate to="/login" />
+          } />
 
-        <Route path="/chat" element={
-          user ? (
-            <Layout user={user} onLogout={handleLogout}>
-              <Chat />
-            </Layout>
-          ) : <Navigate to="/login" />
-        } />
+          <Route path="/chat" element={
+            user ? (
+              <Layout user={user} onLogout={handleLogout}>
+                <Chat />
+              </Layout>
+            ) : <Navigate to="/login" />
+          } />
 
-        {/* Admin Routes */}
-        <Route path="/admin/logs" element={
-          user ? (
-            <Layout user={user} onLogout={handleLogout}>
-              <AuditLogs />
-            </Layout>
-          ) : <Navigate to="/login" />
-        } />
+          <Route path="/settings" element={
+            user ? (
+              <Layout user={user} onLogout={handleLogout}>
+                <Settings />
+              </Layout>
+            ) : <Navigate to="/login" />
+          } />
 
-        <Route path="/admin/users" element={
-          user ? (
-            <Layout user={user} onLogout={handleLogout}>
-              <Users />
-            </Layout>
-          ) : <Navigate to="/login" />
-        } />
+          {/* Admin Routes */}
+          <Route path="/admin/logs" element={
+            user ? (
+              <Layout user={user} onLogout={handleLogout}>
+                <AuditLogs />
+              </Layout>
+            ) : <Navigate to="/login" />
+          } />
 
-        <Route path="/admin/broadcast" element={
-          user ? (
-            <Layout user={user} onLogout={handleLogout}>
-              <Broadcast />
-            </Layout>
-          ) : <Navigate to="/login" />
-        } />
+          <Route path="/admin/users" element={
+            user ? (
+              <Layout user={user} onLogout={handleLogout}>
+                <Users />
+              </Layout>
+            ) : <Navigate to="/login" />
+          } />
 
-      </Routes>
-    </HashRouter>
+          <Route path="/admin/broadcast" element={
+            user ? (
+              <Layout user={user} onLogout={handleLogout}>
+                <Broadcast />
+              </Layout>
+            ) : <Navigate to="/login" />
+          } />
+
+        </Routes>
+      </HashRouter>
+    </PreferencesProvider>
   );
 };
 
